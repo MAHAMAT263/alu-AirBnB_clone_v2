@@ -8,7 +8,7 @@ from models.state import State
 class City(BaseModel):
     """ the city class contains state ID and name """
     __tablename__ = 'cities'
-    state_id = Column(string(60), nullable=False,ForeignKey('states.id'))
-    name = Column(string(128), nullable=False)
+    state_id = Column(String(60), ForeignKey('states.id'), nullable=False)
+    name = Column(String(128), nullable=False)
 
     state = relationship("State", back_populates="cities")

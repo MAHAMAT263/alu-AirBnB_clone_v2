@@ -10,7 +10,7 @@ Base = declarative_base()
 class BaseModel:
     """A base class for all hbnb models"""
     """used db storage"""
-    id = Column(string(60), nullable=False, primary_key=True)
+    id = Column(String(60), nullable=False, primary_key=True)
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow())
     updated_at = Column(DateTime, nullable=False, default=datetime.utcnow())
     def __init__(self, *args, **kwargs):
@@ -46,12 +46,12 @@ class BaseModel:
         storage.new(self)
         storage.save()
     def delete(self):
-        "delete instance from the storage"""
+        """delete instance from the storage"""
         from models import storage
         storage.delete(self)
 
     def to_dict(self):
-    """Convert instance into dict format"""
+        """Convert instance into dict format"""
         dictionary = self.__dict__.copy()
 
     # Remove '_sa_instance_state' if it exists
