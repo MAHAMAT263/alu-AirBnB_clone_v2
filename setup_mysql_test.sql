@@ -1,4 +1,4 @@
--- Create a database if it doesn't already exist
+-- Create database if it doesn't already exist
 CREATE DATABASE IF NOT EXISTS hbnb_test_db;
 
 -- Create a user if it doesn't already exist and set its password
