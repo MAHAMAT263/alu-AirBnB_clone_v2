@@ -9,26 +9,38 @@ Base = declarative_base()
 
 class BaseModel:
     """A base class for all hbnb models"""
-    """used db storage"""
+    # used for db storage
     id = Column(String(60), nullable=False, primary_key=True)
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow())
     updated_at = Column(DateTime, nullable=False, default=datetime.utcnow())
+
     def __init__(self, *args, **kwargs):
+        """Instantiates a new model"""
         if not kwargs:
             from models import storage
             self.id = str(uuid.uuid4())
-            self.created_at = datetime.utcnow().isoformat()
-            self.updated_at = datetime.utcnow().isoformat()
-        else:
-            kwargs.setdefault("id", str(uuid.uuid4()))
-            kwargs.setdefault("created_at", datetime.utcnow().isoformat())
-            kwargs.setdefault("updated_at", datetime.utcnow().isoformat())
+            self.created_at = datetime.utcnow()
+            self.updated_at = datetime.utcnow()
+        if kwargs:
+            if "id" not in kwargs:
+                kwargs["id"] = str(uuid.uuid4())
+            if "created_at" not in kwargs:
+                kwargs["created_at"] = datetime.utcnow().isoformat()
+            if "updated_at" not in kwargs:
+                kwargs["updated_at"] = datetime.utcnow().isoformat()
 
             for key, value in kwargs.items():
-                if key in ["created_at", "updated_at"]:
-                    kwargs[key] = datetime.strptime(value, '%Y-%m-%dT%H:%M:%S.%f')
+                if key == 'updated_at':
+                    kwargs[key] = datetime.strptime(
+                        value,
+                        '%Y-%m-%dT%H:%M:%S.%f')
+                if key == 'created_at':
+                    kwargs[key] = datetime.strptime(
+                        value,
+                        '%Y-%m-%dT%H:%M:%S.%f')
                 if hasattr(self, key) and key != '__class__':
-                        setattr(self, key, value)
+                    setattr(self, key, value)
+
             if '__class__' in kwargs:
                 del kwargs['__class__']
             self.__dict__.update(kwargs)
