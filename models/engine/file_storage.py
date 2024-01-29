@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """Filestorage class for AirBnB"""
 import json
+import sys
 from models.base_model import BaseModel
 from models.user import User
 from models.state import State

@@ -1,6 +1,6 @@
 #!/usr/bin/python3
+import sys
 import unittest
-import models
 from models.user import User
 from models.review import Review
 from models.amenity import Amenity
@@ -25,10 +25,10 @@ class TestDBStorage(unittest.TestCase):
 
     def test_user(self):
         """ Tests user """
-        user = User(name="Moussa", email="moussa@gmail.com", password="Moussa12345")
+        user = User(name="Mahamat", email="mahamat@gmail.com", password="Aht12345")
         user.save()
         self.assertFalse(user.id in self.storage.all())
-        self.assertEqual(user.name, "Moussa")
+        self.assertEqual(user.name, "Mahamat")
 
     def test_city(self):
         """ test city """
@@ -56,7 +56,7 @@ class TestDBStorage(unittest.TestCase):
         city.state_id = state.id
         city.save()
 
-        user = User(name="Moussa", email="moussa@gmail.com", password="Moussa12345")
+        user = User(name="Mahamat", email="mahamat@gmail.com", password="Aht12345")
         user.save()
 
         place = Place(name="Palace", number_rooms=4)
@@ -84,7 +84,7 @@ class TestDBStorage(unittest.TestCase):
         city.state_id = state.id
         city.save()
 
-        user = User(name="Moussa", email="Moussa@gmail.com", password="Moussa12345")
+        user = User(name="Mahamat", email="Mahamat@gmail.com", password="Aht12345")
         user.save()
 
         place = Place(name="Palace", number_rooms=4)
