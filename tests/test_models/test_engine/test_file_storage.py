@@ -9,7 +9,20 @@ import os
 
 @unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') == 'db', "skip if not db")
 class TestFileStorage(unittest.TestCase):
-    """ Class to test the file storage method """
+    def test_delete_method(self):
+        """ Test the delete method of FileStorage """
+        new = BaseModel()
+        self.storage.new(new)
+        key = "{}.{}".format(type(new).__name__, new.id)
+
+        # Before delete, key should exist
+        self.assertTrue(key in self.storage._FileStorage__objects)
+
+        # Call the delete method
+        self.storage.delete(new)
+
+        # After delete, key should not exist
+        self.assertFalse(key in self.storage._FileStorage__objects)
 
     def setUp(self):
         """ Set up test environment """
