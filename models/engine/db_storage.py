@@ -1,58 +1,79 @@
 #!/usr/bin/python3
+
 """db_storage.py use database"""
-from os import getenv
+
+import os
+
+import sqlalchemy
+from sqlalchemy.orm import sessionmaker, scoped_session
 from models.base_model import Base
-from models.amenity import Amenity
-from models.city import City
-from models.place import Place
-from models.review import Review
-from models.state import State
 from models.user import User
-from sqlalchemy import (create_engine)
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import scoped_session
-from sqlalchemy.orm import sessionmaker
+from models.place import Place
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.review import Review
 
 
 class DBStorage:
-    """Represents a database storage engine."""
-
+    """Represents database storage"""
     __engine = None
     __session = None
 
+    """
+    To set the environment variables, depending on your operating system:
+    export MY_VARIABLE=<MY_VARIABLE_VALUE>  (Linux)
+    set MY_VARIABLE=<MY_VARIABLE_VALUE>  (Windows)
+    """
+
     def __init__(self):
-        """Initialize a new DBStorage instance."""
-        user = getenv("HBNB_MYSQL_USER")
-        passwd = getenv("HBNB_MYSQL_PWD")
-        db = getenv("HBNB_MYSQL_DB")
-        host = getenv("HBNB_MYSQL_HOST")
-        env = getenv("HBNB_ENV")
+        """Initialize object"""
+        user = os.getenv('HBNB_MYSQL_USER')
+        password = os.getenv('HBNB_MYSQL_PWD')
+        host = os.getenv('HBNB_MYSQL_HOST')
+        database = os.getenv('HBNB_MYSQL_DB')
 
-        self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'
-                                      .format(user, passwd, host, db),
-                                      pool_pre_ping=True)
+        self.__engine = sqlalchemy.create_engine(
+            'mysql+mysqldb://{}:{}@{}:3306/{}'
+            .format(user,
+                    password,
+                    host,
+                    database), pool_pre_ping=True)
 
-        if env == "test":
+        if os.getenv('HBNB_ENV') == "test":
+            # from models.base_model import Base
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
-        """Query on the curret database session all objects of the given class."""
-        dic = {}
-        if cls:
-            if type(cls) is str:
-                cls = eval(cls)
-            query = self.__session.query(cls)
-            for elem in query:
-                key = "{}.{}".format(type(elem).__name__, elem.id)
-                dic[key] = elem
-        else:
-            lista = [State, City, User, Place, Review, Amenity]
-            for clase in lista:
-                query = self.__session.query(clase)
-                for elem in query:
-                    key = "{}.{}".format(type(elem).__name__, elem.id)
-                    dic[key] = elem
-        return (dic)
+        """Gets all objects depending on the class name"""
+        # from models.base_model import BaseModel
+        # from models.user import User
+        # from models.place import Place
+        # from models.state import State
+        # from models.city import City
+        # from models.amenity import Amenity
+        # from models.review import Review
+
+        classes = {
+            'User': User, 'Place': Place,
+            'State': State, 'City': City, 'Amenity': Amenity,
+            'Review': Review
+        }
+        obj_dict = {}
+        if cls is not None and cls in classes:
+            class_objects = self.__session.query(classes[cls]).all()
+            for obj in class_objects:
+                key = obj.__class__.__name__ + "." + obj.id
+                obj_dict[key] = obj
+
+        if cls is None:
+            for cls in classes:
+                class_objects = self.__session.query(classes[cls]).all()
+                for obj in class_objects:
+                    key = obj.__class__.__name__ + "." + obj.id
+                    obj_dict[key] = obj
+
+        return obj_dict
 
     def new(self, obj):
         """Adds the object to the current database session"""
@@ -64,7 +85,7 @@ class DBStorage:
 
     def delete(self, obj=None):
         """Deletes from the current database session obj if not None"""
-        if obj:
+        if obj is not None:
             self.__session.delete(obj)
 
     def reload(self):
