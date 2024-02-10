@@ -76,9 +76,9 @@ class TestBaseModel(unittest.TestCase):
 
     def test_kwargs_one(self):
         """ """
-        n = {'Name': 'test'}
+        invalid_key = {'invalid_key': 'value'}
         with self.assertRaises(KeyError):
-            new = self.value(**n)
+            new = BaseModel(**invalid_key)
 
     def test_id(self):
         """ """
