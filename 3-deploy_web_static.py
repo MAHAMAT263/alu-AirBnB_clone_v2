@@ -4,7 +4,7 @@ from fabric import task, Connection
 from datetime import datetime
 import os
 
-env = {"hosts": ['54.221.100.63', '34.234.69.221'], "user": "ubuntu", "key": "~/.ssh/id_rsa"}
+env = {"hosts": ['3.84.176.255', '54.236.6.241'], "user": "ubuntu", "key": "~/.ssh/id_rsa"}
 
 
 def do_pack():
